@@ -5,9 +5,22 @@
 */
 
 import { useRef, useState } from 'react';
-import { fixedForwardRef } from './fixed-foward-ref';
+import { fixedForwardRef } from './fixed-forward-ref';
 
-const FormComponent = fixedForwardRef((props: any, ref) => {
+type FormData = {
+  name: string;
+  email: string;
+  age: number;
+  occupation: string;
+  bio: string;
+};
+
+type FormProps<T> = {
+  initialData: T;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+};
+
+const FormComponent = fixedForwardRef<HTMLFormElement, FormProps<FormData>>((props, ref) => {
   return (
     <form
       ref={ref}
@@ -28,7 +41,6 @@ const FormComponent = fixedForwardRef((props: any, ref) => {
             className="block w-full mt-1 text-gray-800 border-gray-800 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
         </div>
-
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email
@@ -42,7 +54,6 @@ const FormComponent = fixedForwardRef((props: any, ref) => {
             className="block w-full mt-1 text-gray-800 border-gray-800 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
         </div>
-
         <div>
           <label htmlFor="age" className="block text-sm font-medium text-gray-700">
             Age
@@ -56,7 +67,6 @@ const FormComponent = fixedForwardRef((props: any, ref) => {
             className="block w-full mt-1 text-gray-800 border-gray-800 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
         </div>
-
         <div>
           <label htmlFor="occupation" className="block text-sm font-medium text-gray-700">
             Occupation
@@ -75,7 +85,6 @@ const FormComponent = fixedForwardRef((props: any, ref) => {
             <option value="other">Other</option>
           </select>
         </div>
-
         <div>
           <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
             Bio
@@ -88,7 +97,6 @@ const FormComponent = fixedForwardRef((props: any, ref) => {
             className="block w-full mt-1 text-gray-800 border-gray-800 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
         </div>
-
         <button
           type="submit"
           className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -101,23 +109,23 @@ const FormComponent = fixedForwardRef((props: any, ref) => {
 });
 
 const App = () => {
-  const formRef = useRef(null);
-  const [submittedData, setSubmittedData] = useState(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [submittedData, setSubmittedData] = useState<FormData | null>(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
+    const data: FormData = {
+      name: String(formData.get('name')),
+      email: String(formData.get('email')),
       age: Number(formData.get('age')),
-      occupation: formData.get('occupation'),
-      bio: formData.get('bio'),
+      occupation: String(formData.get('occupation')),
+      bio: String(formData.get('bio')),
     };
     setSubmittedData(data);
   };
 
-  const initialData = {
+  const initialData: FormData = {
     name: '',
     email: '',
     age: 0,
@@ -128,7 +136,6 @@ const App = () => {
   return (
     <div className="flex flex-col justify-center min-h-screen py-6 sm:py-12">
       <FormComponent ref={formRef} initialData={initialData} handleSubmit={handleSubmit} />
-
       {submittedData && (
         <div className="max-w-md p-6 mx-auto rounded-lg shadow-md" data-testid="submitted-data">
           <h2 className="mb-4 text-lg font-semibold">Submitted Data:</h2>
