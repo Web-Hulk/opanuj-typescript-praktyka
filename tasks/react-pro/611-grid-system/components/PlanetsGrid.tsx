@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Planet, SWAPIResponse } from '../types';
 
-interface PlanetsGridProps<> {}
+interface PlanetsGridProps<As extends React.ElementType = 'section'> {
+  as?: As;
+  columns?: number;
+  children: (planet: Planet) => React.ReactNode;
+}
 
-export function PlanetsGrid({}: PlanetsGridProps) {
+export function PlanetsGrid<As extends React.ElementType = 'section'>({
+  as,
+  columns = 3,
+  children,
+  ...rest
+}: PlanetsGridProps<As>) {
   const [planets, setPlanets] = useState<Planet[]>([]);
 
   useEffect(() => {
@@ -20,15 +29,19 @@ export function PlanetsGrid({}: PlanetsGridProps) {
     fetchPlanets();
   }, []);
 
+  const Component = as || 'section';
+
   return (
-    <div className=" bg-gray-900" data-testid="planets-grid">
-      <div className={`grid gap-6 grid-cols-1 md:grid-cols-${columns} auto-rows-fr`}>
-        {planets.map((planet) => (
-          <div key={planet.url} className="h-full">
-            {children(planet)}
-          </div>
-        ))}
-      </div>
-    </div>
+    <Component
+      className={`grid gap-6 grid-cols-1 md:grid-cols-${columns} auto-rows-fr`}
+      data-testid="planets-grid"
+      {...rest}
+    >
+      {planets.map((planet) => (
+        <div key={planet.url} className="h-full">
+          {children(planet)}
+        </div>
+      ))}
+    </Component>
   );
 }

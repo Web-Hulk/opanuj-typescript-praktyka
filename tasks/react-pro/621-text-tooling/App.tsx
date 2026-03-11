@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { PencilIcon } from 'lucide-react';
+import { useState } from 'react';
 import TextFrame from './TextFrame';
+import { BaseText } from './tools/BaseText';
 import withBold from './tools/Bold';
 import withItalics from './tools/Italic';
 import withRainbow from './tools/Rainbow';
-import { BaseText } from './tools/BaseText';
 
 export default function App() {
   const [text, setText] = useState('Opanuj TypeScript z Przeprogramowanymi');

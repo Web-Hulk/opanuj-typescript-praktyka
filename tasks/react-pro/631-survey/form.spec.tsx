@@ -1,8 +1,7 @@
+import { fireEvent, render, screen } from '@testing-library/react';
 import { join } from 'path';
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { getCompilerDiagnostics } from '../../../utils/ts-utils';
-import { fireEvent } from '@testing-library/react';
-import { screen, render } from '@testing-library/react';
 import Survey from './components/Survey';
 
 describe('Form Controls', () => {
