@@ -1,8 +1,8 @@
+import { render } from '@testing-library/react';
 import { join } from 'path';
 import { describe, test } from 'vitest';
 import { getCompilerDiagnostics } from '../../../utils/ts-utils';
 import App from './App';
-import { render } from '@testing-library/react';
 import frameworks from './frameworks.json';
 
 describe('Chart', () => {
