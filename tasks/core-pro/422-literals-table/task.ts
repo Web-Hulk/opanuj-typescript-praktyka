@@ -1,17 +1,26 @@
-import type { Entities } from './table-models.ts';
+import type { Order, Product, User } from './table-models.ts';
 
-type Get<Model, TableName extends Entities> = {
-  [Prop in `get${Capitalize<TableName>}`]: (id: number) => Model;
+type ModelToEntity<T> = T extends User
+  ? 'user'
+  : T extends Product
+    ? 'product'
+    : T extends Order
+      ? 'order'
+      : never;
+
+type Get<Model> = {
+  [Prop in `get${Capitalize<ModelToEntity<Model>>}`]: (id: number) => Model;
 };
 
-type Update<Model, TableName extends Entities> = {
-  [Prop in `update${Capitalize<TableName>}`]: (id: number, update: Partial<Model>) => void;
+type Update<Model> = {
+  [Prop in `update${Capitalize<ModelToEntity<Model>>}`]: (
+    id: number,
+    update: Partial<Model>,
+  ) => Model;
 };
 
-type Delete<Model, TableName extends Entities> = {
-  [Prop in `delete${Capitalize<TableName>}`]: (id: number) => Model;
+type Delete<Model> = {
+  [Prop in `delete${Capitalize<ModelToEntity<Model>>}`]: (id: number) => Model;
 };
 
-export type Table<Model, TableName extends Entities> = Get<Model, TableName> &
-  Update<Model, TableName> &
-  Delete<Model, TableName>;
+export type Table<Model> = Get<Model> & Update<Model> & Delete<Model>;
