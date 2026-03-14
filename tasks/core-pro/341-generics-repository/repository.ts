@@ -70,4 +70,35 @@ export class ProductRepository {
   }
 }
 
-export class Repository<T extends { id?: number }> {}
+export class Repository<T extends { id?: number }> {
+  private dataAccess: DataAccess;
+  private tableName: string;
+
+  constructor(dataAccess: DataAccess, tableName: string) {
+    this.dataAccess = dataAccess;
+    this.tableName = tableName;
+  }
+
+  async getById(id: number): Promise<T> {
+    const query = `SELECT * FROM ${this.tableName} WHERE id = $1`;
+    const values = [id];
+    const res = await this.dataAccess.query<T>(query, values);
+    return res.rows[0];
+  }
+
+  async getAll(): Promise<T[]> {
+    const query = `SELECT * FROM ${this.tableName}`;
+    const res = await this.dataAccess.query<T>(query);
+    return res.rows;
+  }
+
+  async insert(item: Omit<T, 'id'>): Promise<T> {
+    const keys = Object.keys(item);
+    const columns = keys.join(', ');
+    const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
+    const values = keys.map((k) => (item as any)[k]);
+    const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders}) RETURNING *`;
+    const res = await this.dataAccess.query<T>(query, values);
+    return res.rows[0];
+  }
+}
