@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { getCompilerDiagnostics } from '../../../utils/ts-utils.ts';
 import { join } from 'path';
+import { describe, expect, it } from 'vitest';
+import { getCompilerDiagnostics } from '../../../utils/ts-utils.ts';
 import { UserModule } from './task.ts';
 
 describe('Strict mode', () => {
